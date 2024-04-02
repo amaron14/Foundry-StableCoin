@@ -1,66 +1,48 @@
-## Foundry
+## RON Stablecoin
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+This repository contains the source code for the Decentralized Stablecoin System (RON), a project built with Solidity for the Ethereum blockchain. RON aims to create a decentralized stablecoin, pegged to the US Dollar (USD), through an algorithmic approach.
 
-Foundry consists of:
+**Features:**
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+- Decentralized and Algorithmic: Operates entirely on the blockchain, utilizing algorithms to maintain the USD peg.
+- Exogenous Collateralization: Users deposit a basket of supported cryptocurrencies as collateral to back the value of the stablecoin tokens.
+- Transparency and Security: All transactions are publicly viewable on the blockchain, and smart contracts undergo rigorous testing to minimize vulnerabilities.
+- This system functions on the assumption that users will actively participate in the liquidation process for the associated incentive.
 
-## Documentation
+**Foundry Integration:**
 
-https://book.getfoundry.sh/
+This project uses Foundry for development, testing, and deployment. Foundry offers a powerful and efficient toolkit for building and managing Solidity smart contracts.
 
-## Usage
+**Getting Started:**
 
-### Build
+For detailed instructions on setting up Foundry and using this project, please refer to the official Foundry documentation: https://book.getfoundry.sh/.
 
-```shell
-$ forge build
-```
+**Contract Breakdown:**
 
-### Test
+**DecentralizedStableCoin.sol**: Defines the ERC20 token representing the stablecoin itself, named "Decentralized StableCoin" (RON).
 
-```shell
-$ forge test
-```
+**RONEngine.sol**: Acts as the core engine, handling various user interactions like depositing collateral, minting/burning RON, redeeming collateral, and liquidating positions
+This file contains the main contract logic.
 
-### Format
+**OracleLib.sol**: provide functionalities for verifying data freshness from Chainlink oracles.
 
-```shell
-$ forge fmt
-```
+**Core Functions:**
 
-### Gas Snapshots
+- **`depositCollateral`:** Users can deposit supported cryptocurrencies to mint RON tokens.
+- **`mintRon`:** Users can mint RON by depositing collateral, subject to health factor checks
+- **`burnRon`:** Users can burn their RON tokens
+- **`redeemCollateral`:** Users can redeem their deposited collateral, potentially in exchange for burning RON tokens.
+- **`liquidate`:** for System Health, in critical situations, a user's position can be liquidated by another user if their collateral value falls below a minimum threshold relative to their minted RON. Liquidation involves burning RON and redeeming a portion of the collateral to maintain system stability.
 
-```shell
-$ forge snapshot
-```
+**Additional Information:**
 
-### Anvil
+- _Health Factor Mechanism_:
+  A core concept of the DSC system is the health factor. This factor represents the ratio of a user's collateral value to their minted RON. The health factor determines the minting limit for each user, incentivizing them to maintain sufficient collateral backing for their RON holdings and ultimately safeguarding the USD peg.
+- _Liquidation Threshold and Bonus_:
+  The system defines a liquidation threshold. If a user's health factor falls below this threshold, their position becomes susceptible to liquidation by another user. The liquidator receives a 10% bonus incentive on the redeemed collateral, creating an economic incentive to maintain system stability.
+- _Minimum Health Factor_:
+  A minimum health factor is enforced to prevent excessive minting of RON without adequate collateral support.
+- _Price feeds_: Chainlink oracles are integrated to retrieve up-to-date exchange rates for the collateral tokens
+- _test_: Basic stateful fuzz testing is implemented to enhance the robustness of the smart contracts.
 
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+**Note:** This is a basic example for learning purposes. Real-world smart contracts require much more rigorous security considerations, testing, and audits before deployment.
